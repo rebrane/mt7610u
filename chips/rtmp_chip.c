@@ -592,7 +592,7 @@ static VOID ChipBBPAdjust(RTMP_ADAPTER *pAd)
 static VOID Default_ChipSwitchChannel(
 	IN PRTMP_ADAPTER pAd,
 	IN UCHAR Channel,
-	IN BOOLEAN bScan) 
+	IN enum SWITCH_CHANNEL_STAGE Stage) 
 {
 	DBGPRINT(RT_DEBUG_ERROR, ("%s(): dummy channel switch function!\n", __FUNCTION__));
 }

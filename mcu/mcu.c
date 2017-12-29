@@ -30,7 +30,7 @@
 INT MCUBurstWrite(PRTMP_ADAPTER pAd, UINT32 Offset, UINT32 *Data, UINT32 Cnt)
 {
 #ifdef RTMP_USB_SUPPORT
-	RTUSBMultiWrite_nBytes(pAd, Offset, Data, Cnt * 4, 64); 
+	RTUSBMultiWrite_nBytes(pAd, Offset, (PUCHAR) Data, Cnt * 4, 64); 
 #endif /* RTMP_USB_SUPPORT */
 }
 

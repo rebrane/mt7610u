@@ -263,7 +263,7 @@ int andes_fun_set(struct _RTMP_ADAPTER *ad, u32 fun_id, u32 param);
 int andes_pwr_saving(struct _RTMP_ADAPTER *ad, u32 op, u32 level, 
 					 u32 listen_interval, u32 pre_tbtt_lead_time,
 					 u8 tim_byte_offset, u8 tim_byte_pattern);
-int andes_calibration(struct _RTMP_ADAPTER *ad, u32 cal_id, u32 param);
+void andes_calibration(struct _RTMP_ADAPTER *ad, u32 cal_id, u32 param);
 int andes_led_op(struct _RTMP_ADAPTER *ad, u32 led_idx, u32 link_status);
 BOOLEAN is_inband_cmd_processing(struct _RTMP_ADAPTER *ad);
 void andes_cmd_msg_bh(unsigned long param);

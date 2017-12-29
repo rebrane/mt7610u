@@ -4049,7 +4049,7 @@ BOOLEAN MlmeEnqueueForRecv(
 	{
 		if (!MsgTypeSubst(pAd, pFrame, &Machine, &MsgType)) 
 		{
-			DBGPRINT_ERR(("MlmeEnqueueForRecv: un-recongnized mgmt->subtype=%d\n",pFrame->Hdr.FC.SubType));
+			/*DBGPRINT_ERR(("MlmeEnqueueForRecv: un-recongnized mgmt->subtype=%d\n",pFrame->Hdr.FC.SubType));*/
 			return FALSE;
 		}
 	}

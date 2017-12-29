@@ -1,3 +1,7 @@
+Modified by Neil Klopfenstein, 12/2017
+
+Fix compile with Linux 4.14
+
 #changelog 2016-04-04
 1. theoretically supported products (common/rtusb_dev_id.c):
  * {USB_DEVICE(0x148F,0x7610)}, /* MT7610U Ralink VID */

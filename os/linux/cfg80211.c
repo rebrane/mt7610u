@@ -155,7 +155,11 @@ static const UINT32 CipherSuites[] = {
 /*
 	The driver's regulatory notification callback.
 */
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0))
+static void CFG80211_RegNotifier(
+	IN struct wiphy					*pWiphy,
+	IN struct regulatory_request	*pRequest);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30))
 static INT32 CFG80211_RegNotifier(
 	IN struct wiphy					*pWiphy,
 	IN struct regulatory_request	*pRequest);
@@ -305,7 +309,9 @@ static int CFG80211_OpsVirtualInfChg(
 	IN struct wiphy					*pWiphy,
 	IN struct net_device			*pNetDevIn,
 	IN enum nl80211_iftype			Type,
+# if (LINUX_VERSION_CODE <= KERNEL_VERSION(4,12,0))
 	IN u32							*pFlags,
+# endif /* LINUX_VERSION_CODE */
 	struct vif_params				*pParams)
 #else
 static int CFG80211_OpsVirtualInfChg(
@@ -320,6 +326,9 @@ static int CFG80211_OpsVirtualInfChg(
 	CFG80211_CB *pCfg80211_CB;
 	struct net_device *pNetDev;
 	UINT32 Filter;
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0))
+	u32 *pFlags = &pParams->flags;
+#endif /* LINUX_VERSION_CODE */
 
 
 	CFG80211DBG(RT_DEBUG_ERROR, ("80211> %s ==>\n", __FUNCTION__));
@@ -615,24 +624,16 @@ Note:
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 static int CFG80211_OpsTxPwrSet(
 	IN struct wiphy						*pWiphy,
+# if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0))
+	IN struct wireless_dev *wdev,
+# endif	/* LINUX_VERSION_CODE */
 	IN enum nl80211_tx_power_setting	Type,
 	IN int								dBm)
-{
-	CFG80211DBG(RT_DEBUG_ERROR, ("80211> %s ==>\n", __FUNCTION__));
-	return -EOPNOTSUPP;
-} /* End of CFG80211_OpsTxPwrSet */
-
-#else
-static int CFG80211_OpsTxPwrSet(
-	IN struct wiphy						*pWiphy,
-	IN enum tx_power_setting			Type,
-	IN int								dBm)
-{
-	CFG80211DBG(RT_DEBUG_ERROR, ("80211> %s ==>\n", __FUNCTION__));
-	return -EOPNOTSUPP;
-} /* End of CFG80211_OpsTxPwrSet */
 #endif /* LINUX_VERSION_CODE */
-
+{
+	CFG80211DBG(RT_DEBUG_ERROR, ("80211> %s ==>\n", __FUNCTION__));
+	return -EOPNOTSUPP;
+} /* End of CFG80211_OpsTxPwrSet */
 
 /*
 ========================================================================
@@ -652,6 +653,9 @@ Note:
 */
 static int CFG80211_OpsTxPwrGet(
 	IN struct wiphy						*pWiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0))
+	IN struct wireless_dev *wdev,
+#endif	/* LINUX_VERSION_CODE */
 	IN int								*pdBm)
 {
 	CFG80211DBG(RT_DEBUG_ERROR, ("80211> %s ==>\n", __FUNCTION__));
@@ -709,7 +713,7 @@ Note:
 static int CFG80211_OpsStaGet(
 	IN struct wiphy						*pWiphy,
 	IN struct net_device				*pNdev,
-	IN UINT8							*pMac,
+	IN const u8							*pMac,
 	IN struct station_info				*pSinfo)
 {
 	VOID *pAd;
@@ -2160,7 +2164,13 @@ Note:
 ========================================================================
 */
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30))
-static INT32 CFG80211_RegNotifier(
+static 
+# if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0))
+void
+# else
+INT32
+# endif /* LINUX_VERSION_CODE */
+CFG80211_RegNotifier(
 	IN struct wiphy					*pWiphy,
 	IN struct regulatory_request	*pRequest)
 {
@@ -2175,7 +2185,11 @@ static INT32 CFG80211_RegNotifier(
 	if (pAd == NULL)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("crda> reg notify but pAd = NULL!"));
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0))
 		return 0;
+#else
+		return;
+#endif
 	} /* End of if */
 
 	/*
@@ -2265,7 +2279,11 @@ static INT32 CFG80211_RegNotifier(
 		RTMP_DRIVER_80211_REG_NOTIFY(pAd, &RegInfo);
 	} /* End of if */
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0))
+	return;
+#else
 	return 0;
+#endif
 } /* End of CFG80211_RegNotifier */
 
 #else

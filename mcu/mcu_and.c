@@ -29,7 +29,7 @@
 
 
 #ifdef RTMP_MAC_USB
-VOID usb_uploadfw_complete(purbb_t urb, pregs *pt_regs)
+VOID usb_uploadfw_complete(purbb_t urb)
 {
 	RTMP_OS_COMPLETION *load_fw_done = (RTMP_OS_COMPLETION *)RTMP_OS_USB_CONTEXT_GET(urb);
 
@@ -150,12 +150,12 @@ loadfw_protect:
 	DBGPRINT(RT_DEBUG_OFF, ("fw version:%d.%d.%02d ", (fw_ver & 0xf000) >> 8,
 						(fw_ver & 0x0f00) >> 8, fw_ver & 0x00ff));
 	DBGPRINT(RT_DEBUG_OFF, ("build:%x\n", build_ver));
-	DBGPRINT(RT_DEBUG_OFF, ("build time:"));
 
+	char buildtime[17]={0};
 	for (loop = 0; loop < 16; loop++)
-		DBGPRINT(RT_DEBUG_OFF, ("%c", *(cap->FWImageName + 16 + loop)));
+		buildtime[loop] = *(cap->FWImageName + 16 + loop);
 
-	DBGPRINT(RT_DEBUG_OFF, ("\n"));
+	DBGPRINT(RT_DEBUG_OFF, ("build time:%s\n", buildtime));
 
 	DBGPRINT(RT_DEBUG_OFF, ("ilm length = %d(bytes)\n", ilm_len));
 	DBGPRINT(RT_DEBUG_OFF, ("dlm length = %d(bytes)\n", dlm_len));
@@ -2024,7 +2024,7 @@ error:
 	return ret;
 }
 
-int andes_calibration(RTMP_ADAPTER *ad, u32 cal_id, u32 param)
+void andes_calibration(RTMP_ADAPTER *ad, u32 cal_id, u32 param)
 {
 	struct cmd_msg *msg;
 	u32 value;
@@ -2053,7 +2053,7 @@ int andes_calibration(RTMP_ADAPTER *ad, u32 cal_id, u32 param)
 	ret = andes_send_cmd_msg(ad, msg);
 
 error:
-	return ret;
+	return;
 }
 
 int andes_led_op(RTMP_ADAPTER *ad, u32 led_idx, u32 link_status)

@@ -1781,7 +1781,7 @@ static VOID MT76x0_ChipBBPAdjust(RTMP_ADAPTER *pAd)
 static VOID MT76x0_ChipSwitchChannel(
 	struct _RTMP_ADAPTER *pAd,
 	UCHAR Channel,
-	BOOLEAN bScan)
+	enum SWITCH_CHANNEL_STAGE Stage )
 {
 	CHAR TxPwer = 0; /* Bbp94 = BBPR94_DEFAULT, TxPwer2 = DEFAULT_RF_TX_POWER; */
 	UCHAR RFValue = 0;
@@ -1798,6 +1798,7 @@ static VOID MT76x0_ChipSwitchChannel(
 	CHAR SkuBasePwr;
 	CHAR ChannelPwrAdj;
 #endif /* SINGLE_SKU_V2 */
+	BOOLEAN bScan = (Stage == SCANNING);
 	
 	RTMP_GetCurrentSystemTick(&Old);
 
