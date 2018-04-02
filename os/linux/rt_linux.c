@@ -64,6 +64,18 @@ ULONG OS_NumOfMemAlloc = 0, OS_NumOfMemFree = 0;
 ULONG OS_NumOfPktAlloc = 0, OS_NumOfPktFree = 0;
 #endif /* VENDOR_FEATURE2_SUPPORT */
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)) && !defined(timer_setup)
+static inline void timer_setup(struct timer_list *timer,
+				      void (*func)(compat_timer_arg_t),
+				      unsigned int flags)
+{
+	init_timer(timer);
+	timer->function = func;
+	timer->data = 0;
+	timer->flags = flags;
+}
+#endif
+
 /*
  * the lock will not be used in TX/RX
  * path so throughput should not be impacted
@@ -114,9 +126,7 @@ static inline VOID __RTMP_OS_Init_Timer(
 	IN PVOID data)
 {
 	if (!timer_pending(pTimer)) {
-		init_timer(pTimer);
-		pTimer->data = (unsigned long)data;
-		pTimer->function = function;
+		timer_setup(pTimer, function, 0);
 	}
 }
 
